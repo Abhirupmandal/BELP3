@@ -1,0 +1,72 @@
+# ML_Prac_2
+# Converted from Jupyter Notebook.
+# Cell boundaries are preserved; notebook outputs are excluded.
+
+# ================== CELL 1 (CODE) ==================
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier as KNC
+from sklearn.svm import SVC 
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# ================== CELL 2 (CODE) ==================
+df = pd.read_csv("emails.csv")
+print(df.head())
+df.shape
+
+# ================== CELL 3 (CODE) ==================
+X = df.drop(["Email No.","Prediction"],axis = 1)
+y = df["Prediction"]
+print(X.shape,"\n",y.shape)
+
+# ================== CELL 4 (CODE) ==================
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size =  0.18, random_state = 60, stratify = y)
+print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)
+
+# ================== CELL 5 (CODE) ==================
+sc = StandardScaler()
+
+# ================== CELL 6 (CODE) ==================
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# ================== CELL 7 (CODE) ==================
+knn = KNC(n_neighbors = 5)
+
+# ================== CELL 8 (CODE) ==================
+knn.fit(X_train,y_train)
+y_knn_pred = knn.predict(X_test)
+
+# ================== CELL 9 (CODE) ==================
+svc = SVC(kernel = "linear")
+
+# ================== CELL 10 (CODE) ==================
+svc.fit(X_train, y_train)
+y_svc_pred = svc.predict(X_test)
+
+# ================== CELL 11 (CODE) ==================
+svc_acc = accuracy_score(y_test, y_svc_pred)
+knn_acc = accuracy_score(y_test, y_knn_pred)
+
+# ================== CELL 12 (CODE) ==================
+print("SVM Accuracy: ",round(svc_acc*100, 2))
+print("KNN Accuracy: ",round(knn_acc*100, 2))
+
+# ================== CELL 13 (CODE) ==================
+sns.heatmap(confusion_matrix(y_test, y_knn_pred),
+            annot=True, fmt='d', cmap='Blues')
+plt.title("KNN Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+# ================== CELL 14 (CODE) ==================
+sns.heatmap(confusion_matrix(y_test, y_svc_pred),
+            annot=True, fmt='d', cmap='Oranges')
+plt.title("SVM Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()

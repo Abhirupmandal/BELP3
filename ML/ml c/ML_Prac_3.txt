@@ -1,0 +1,67 @@
+# ML_Prac_3
+# Converted from Jupyter Notebook.
+# Cell boundaries are preserved; notebook outputs are excluded.
+
+# ================== CELL 1 (CODE) ==================
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.metrics import accuracy_score, precision_score, confusion_matrix, recall_score
+from sklearn.preprocessing import StandardScaler as SS
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier as KNN
+
+# ================== CELL 2 (CODE) ==================
+df = pd.read_csv("diabetes.csv")
+print(df.head())
+print(df.shape)
+
+# ================== CELL 3 (CODE) ==================
+X = df.drop("Outcome",axis = 1)
+y = df["Outcome"]
+
+# ================== CELL 4 (CODE) ==================
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.18, random_state = 120, stratify = y)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+# ================== CELL 5 (CODE) ==================
+sc = SS()
+
+# ================== CELL 6 (CODE) ==================
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# ================== CELL 7 (CODE) ==================
+knn = KNN(n_neighbors = 7)
+
+# ================== CELL 8 (CODE) ==================
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+# ================== CELL 9 (CODE) ==================
+cm = confusion_matrix(y_test, y_pred)
+
+accuracy = accuracy_score(y_test, y_pred)
+error_rate = 1 - accuracy
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+
+print("\nConfusion Matrix:\n", cm)
+print("Accuracy:", round(accuracy * 100, 2), "%")
+print("Error Rate:", round(error_rate * 100, 2), "%")
+print("Precision:", round(precision, 2))
+print("Recall:", round(recall, 2))
+
+# ================== CELL 10 (CODE) ==================
+
+# 9. Display Confusion Matrix
+plt.figure(figsize=(5, 4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='plasma')
+plt.title("KNN Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()

@@ -1,0 +1,59 @@
+# ML_Prac_5
+# Converted from Jupyter Notebook.
+# Cell boundaries are preserved; notebook outputs are excluded.
+
+# ================== CELL 1 (CODE) ==================
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# ================== CELL 2 (CODE) ==================
+def func(x):
+    return (x + 3) ** 2
+
+# ================== CELL 3 (CODE) ==================
+def gradient(x):
+    return 2 * (x + 3)
+
+# ================== CELL 4 (CODE) ==================
+x = 2.0
+learning_rate = 0.1
+iterations = 50
+
+# ================== CELL 5 (CODE) ==================
+x_history = [x]
+y_history = [func(x)]
+
+# ================== CELL 6 (CODE) ==================
+for i in range(iterations):
+    x = x - learning_rate * gradient(x)
+
+    x_history.append(x)
+    y_history.append(func(x))
+
+# ================== CELL 7 (CODE) ==================
+print("Initial Value of x:", 2.0)
+print("Learning Rate:", learning_rate)
+print("Number of Iterations:", iterations)
+print("\nLocal Minimum of x:", round(x, 6))
+print("Minimum Value of y:", f"{func(x):.8f}")
+
+# ================== CELL 8 (CODE) ==================
+x_values = np.linspace(-6, 3, 200)
+y_values = func(x_values)
+
+# ================== CELL 9 (CODE) ==================
+plt.figure(figsize=(8, 5))
+
+plt.plot(x_values, y_values, label='y = (x + 3)^2')
+plt.scatter(x_history, y_history, color='red',
+            label='Gradient Descent Steps', zorder=3)
+plt.scatter(2, func(2), color='green', label='Starting Point')
+plt.scatter(x, func(x), color='black', label='Minimum Point')
+
+plt.title('Gradient Descent - Local Minimum')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.grid(True)
+plt.show()
